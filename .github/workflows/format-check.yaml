@@ -1,50 +1,25 @@
-name: Python Flake8 Lint
+name: flake8 Lint
 
-on: pull_request
+on:
+  pull_request:
+    types: [review_requested]
+    branches: [main]
 
 jobs:
-  flake8:
-    name: Lint Python
+  flake8-lint:
     runs-on: ubuntu-latest
-
+    name: Lint
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+      - name: Check out source repository
+        uses: actions/checkout@v2
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
         with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+          python-version: "3.12"
+      - run: pip install flake8
+      - run: pip install flake8-docstrings flake8-simplify flake8-unused-arguments flake8-quotes
+      - name: flake8 Lint
+        uses: reviewdog/action-flake8@v3
         with:
-          python-version: '3.12'
-
-      - name: Install flake8
-        run: pip install flake8
-
-      - name: Run flake8 and capture output
-        run: |
-          set -xe
-          git fetch --all
-          git branch -r
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} -- '*.py')
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "No Python files changed."
-          else
-            flake8 $CHANGED_FILES --ignore E501 --output-file flake8_report.txt || true
-          fi
-        shell: bash
-
-      - name: Run reviewdog
-        uses: reviewdog/action-setup@v1
-        with:
+          flake8_args: --ignore E501
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          tool_name: flake8
-          filter_mode: added
-          fail_on_error: true
-          level: error
-          report_only_modified_lines: true
-          flag_nolabel: true
-          workdir: .
-          path: "flake8_report.txt"
-
