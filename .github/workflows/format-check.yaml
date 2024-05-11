@@ -26,7 +26,7 @@ jobs:
           set -xe
           git fetch --all
           git branch -r
-          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- '*.py')
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} -- '*.py')
           if [ -z "$CHANGED_FILES" ]; then
             echo "No Python files changed."
           else
