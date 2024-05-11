@@ -17,11 +17,17 @@ def handle_signal_received(signum, frame):
     run_thread = False
     logging.info("Signal received, preparing to exit...")
 
+
+
+
 def time_since_start(start_time, format_string="%Y-%m-%d %H:%M:%S"):
     """Calculates time elapsed since start_time and formats the output."""
     now = datetime.now()
     elapsed_time = now - start_time
-    return elapsed_time.total_seconds()
+
+    return elapsed_time.total_seconds(
+
+    )
 
 def continuously_write_time(start_time):
     """Function to run in a thread, continuously writing elapsed time."""
