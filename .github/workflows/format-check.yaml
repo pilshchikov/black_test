@@ -25,10 +25,13 @@ jobs:
       - name: Get list of changed Python files
         id: files
         run: |
-          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '\.py$' || true)
+          set -xe
+          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '\.py$')
           echo "::set-output name=python_files::$FILES"
 
       - name: Check Python files with flake8
         if: steps.files.outputs.python_files != ''
-        run: flake8 ${{ steps.files.outputs.python_files }} --ignore E501
+        run: |
+          set -xe
+          flake8 ${{ steps.files.outputs.python_files }} --ignore E501
         continue-on-error: true  # Optionally set this to false to fail the job on any error
