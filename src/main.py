@@ -20,7 +20,7 @@ def rotate_point(cx, cy, angle, px, py):
 
 def project_point_3d_to_2d(px, py, pz):
     """Project 3D point to 2D using simple perspective projection"""
-    # Perspective projection factors
+    # Perspective projection factor
     focal_length = 200
     if pz:
         px = px * focal_length / pz
