@@ -12,24 +12,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.12'  # Adjust the Python version as needed
+          python-version: '3.10'  # Adjust the Python version as needed
 
       - name: Install flake8
         run: pip install flake8
 
+      - name: Check if PR is a draft
+        id: check_draft
+        run: |
+          PR_DATA=$(curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}")
+          IS_DRAFT=$(echo "$PR_DATA" | jq '.draft')
+          echo "::set-output name=is_draft::$IS_DRAFT"
+
+      - name: Fetch all branches
+        run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+
       - name: Get list of changed Python files
+        if: steps.check_draft.outputs.is_draft == 'false'
         id: files
         run: |
           CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} | grep '\.py$')
           echo "::set-output name=python_files::$CHANGED_FILES"
 
       - name: Check Python files with flake8
-        if: steps.files.outputs.python_files != ''
+        if: steps.check_draft.outputs.is_draft == 'false' && steps.files.outputs.python_files != ''
         run: flake8 ${{ steps.files.outputs.python_files }} --ignore E501
         continue-on-error: true  # Optionally set this to false to fail the job on any error
-
