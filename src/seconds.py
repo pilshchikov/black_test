@@ -20,6 +20,7 @@ def handle_signal_received(signum, frame):
 
 
 
+
 def time_since_start(start_time, format_string="%Y-%m-%d %H:%M:%S"):
     """Calculates time elapsed since start_time and formats the output."""
     now = datetime.now()
