@@ -2,7 +2,7 @@ name: flake8 Lint
 
 on:
   pull_request:
-    types: [review_requested]
+    types: [synchronize, review_requested]
     branches: [main]
 
 jobs:
