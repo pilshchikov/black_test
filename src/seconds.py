@@ -1,10 +1,8 @@
-import time
-import threading
 import logging
-import os
 import signal
-import sys
-from datetime import datetime, timedelta
+import threading
+import time
+from datetime import datetime
 
 # Setup logger
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s 1- %(message)s")
