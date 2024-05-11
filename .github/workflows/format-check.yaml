@@ -26,7 +26,12 @@ jobs:
         id: files
         run: |
           set -xe
-          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '\.py$')
+          CHANGED_FILES=$(git diff --name-only 8a6c263307bf45505bc7d1804b9cde84c4018255 ad2bffb66f32681fa286d8cb6fd216ba1d9f8dfc)
+          if [[ "$CHANGED_FILES" == *".py"* ]]; then
+            FILES=$(echo "$CHANGED_FILES" | grep '\.py$')
+          else
+            FILES=""
+          fi
           echo "::set-output name=python_files::$FILES"
 
       - name: Check Python files with flake8
