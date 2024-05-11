@@ -7,7 +7,7 @@ import sys
 from datetime import datetime, timedelta
 
 # Setup logger
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s 1- %(message)s')
 
 # Global flag to control the running of the thread
 run_thread = True
