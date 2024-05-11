@@ -66,10 +66,7 @@ def main():
     elif shape == "cube":
         # Define vertices of a cube centered at the origin (0,0,0)
         size = 50
-        vertices = [
-            (-size, -size, -size),
-            (size, -size, -size),
-            (size, size, -size),
+        vertices = [(-size, -size, -size),  (size, -size, -size), (size, size, -size),
             (-size, size, -size),
             (-size, -size, size),
             (size, -size, size),
@@ -96,6 +93,11 @@ def main():
         if shape == "cube":
             rotated_vertices = [
                 (
+
+
+
+
+
                     math.cos(angle) * vx - math.sin(angle) * vz,
                     vy,
                     math.sin(angle) * vx + math.cos(angle) * vz,
@@ -106,6 +108,7 @@ def main():
                 project_point_3d_to_2d(vx, vy, vz) for vx, vy, vz in rotated_vertices
             ]
         else:
+
             center_x, center_y = 200, 100
             projected_vertices = [
                 rotate_point(center_x, center_y, math.radians(angle), vx, vy) for vx, vy in vertices
@@ -117,6 +120,9 @@ def main():
         for row in canvas:
             print("".join(row))
         time.sleep(0.1)
+
+
+
         angle += 0.05
 
 
