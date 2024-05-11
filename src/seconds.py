@@ -11,13 +11,13 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s 1- %
 run_thread = True
 
 
-def handle_signal_received(signum, frame):
+def handle_signal_received():
     global run_thread
     run_thread = False
     logging.info("Signal received, preparing to exit...")
 
 
-def time_since_start(start_time, format_string="%Y-%m-%d %H:%M:%S"):
+def time_since_start(start_time):
     """Calculates time elapsed since start_time and formats the output."""
     now = datetime.now()
     elapsed_time = now - start_time
