@@ -30,7 +30,21 @@ jobs:
           if [ -z "$CHANGED_FILES" ]; then
             echo "No Python files changed."
           else
-            flake8 $CHANGED_FILES --ignore E501
+            flake8 $CHANGED_FILES --ignore E501 --output-file flake8_report.txt
           fi
         shell: bash
+
+      - name: Run reviewdog
+        uses: reviewdog/reviewdog@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          tool_name: flake8
+          filter_mode: added
+          fail_on_error: true
+          level: error
+          report_only_modified_lines: true
+          flag_nolabel: true
+          workdir: .
+          path: "flake8_report.txt"
 
