@@ -3,7 +3,7 @@ name: Auto-Format on Pull Request Update
 on:
   pull_request:
     types: [synchronize, review_requested]
-    branches: [master]
+    branches: [main]
 
 jobs:
   auto-format-and-merge:
