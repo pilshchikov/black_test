@@ -22,17 +22,13 @@ jobs:
       - name: Install flake8
         run: pip install flake8
 
-      - name: Get list of changed Python files
+      - name: List files changed in the PR
         id: files
         run: |
-          set -xe
-          CHANGED_FILES=$(git diff --name-only 8a6c263307bf45505bc7d1804b9cde84c4018255 ad2bffb66f32681fa286d8cb6fd216ba1d9f8dfc)
-          if [[ "$CHANGED_FILES" == *".py"* ]]; then
-            FILES=$(echo "$CHANGED_FILES" | grep '\.py$')
-          else
-            FILES=""
-          fi
-          echo "::set-output name=python_files::$FILES"
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          URL="https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/files"
+          FILES=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$URL" | jq -r '.[].filename')
+          echo "::set-output name=changed_files::$FILES"
 
       - name: Check Python files with flake8
         if: steps.files.outputs.python_files != ''
