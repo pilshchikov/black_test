@@ -1,38 +1,44 @@
-name: Flake8 Code Style Check
+name: Python Flake8 Lint
 
-on:
-  pull_request:
-    types: [ opened, synchronize, reopened ]
-    branches: [ main ]
+on: pull_request
 
 jobs:
-  flake8-style-check:
+  flake8:
+    name: Lint Python
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch all history for all branches and tags
+          fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.12'  # Adjust the Python version as needed
+          python-version: '3.12'
 
       - name: Install flake8
         run: pip install flake8
 
-      - name: List files changed in the PR
+      - name: Get changed Python files
         id: files
         run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          URL="https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/files"
-          FILES=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$URL" | jq -r '.[].filename')
-          echo "::set-output name=changed_files::$FILES"
+          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+          git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep '\.py$' >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        shell: bash
 
-      - name: Check Python files with flake8
-        if: steps.files.outputs.python_files != ''
+      - name: Run flake8 on changed files
         run: |
-          set -xe
-          flake8 ${{ steps.files.outputs.python_files }} --ignore E501
-        continue-on-error: true  # Optionally set this to false to fail the job on any error
+          if [ -s $CHANGED_FILES ]; then
+            flake8 --output-file=flake8_report.txt $(cat $CHANGED_FILES)
+            if [ $? -ne 0 ]; then
+              echo "Flake8 style errors:"
+              cat flake8_report.txt
+              exit 1
+            fi
+          else
+            echo "No Python files changed."
+          fi
+        shell: bash
