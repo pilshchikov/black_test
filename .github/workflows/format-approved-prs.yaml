@@ -1,0 +1,36 @@
+name: Auto-Format and Merge on Review Approval
+
+on:
+  pull_request_review:
+    types: [submitted]
+    branches: [master]
+
+jobs:
+  auto-format-and-merge:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install black
+        run: python -m pip install black
+
+      - name: Format code with black
+        run: black .
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add -A
+          git commit -m "Apply black formatting" || echo "No changes to commit"
+          git push
