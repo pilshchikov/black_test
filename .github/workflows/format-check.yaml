@@ -16,29 +16,25 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.x'
 
       - name: Install flake8
         run: pip install flake8
 
-      - name: Get changed Python files
-        id: files
+      - name: Run flake8 on changed Python files
         run: |
-          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
-          git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep '\.py$' >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-        shell: bash
-
-      - name: Run flake8 on changed files
-        run: |
-          if [ -s $CHANGED_FILES ]; then
-            flake8 --output-file=flake8_report.txt $(cat $CHANGED_FILES)
+          echo "Fetching list of changed Python files..."
+          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep '\.py$')
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No Python files changed."
+          else
+            echo "Running flake8 on changed files:"
+            echo $CHANGED_FILES
+            flake8 $CHANGED_FILES
             if [ $? -ne 0 ]; then
-              echo "Flake8 style errors:"
-              cat flake8_report.txt
+              echo "Flake8 found issues in the following files:"
+              echo $CHANGED_FILES
               exit 1
             fi
-          else
-            echo "No Python files changed."
           fi
         shell: bash
