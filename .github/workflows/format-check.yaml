@@ -21,5 +21,9 @@ jobs:
       - name: flake8 Lint
         uses: reviewdog/action-flake8@v3
         with:
+          reporter: github-pr-review
+          filter_mode: diff_context
+          fail_on_error: true
+          level: info
           flake8_args: --ignore E501
           github_token: ${{ secrets.GITHUB_TOKEN }}
