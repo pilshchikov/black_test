@@ -40,7 +40,7 @@ def continuously_write_time(start_time):
     """Function to run in a thread, continuously writing elapsed time."""
     while run_thread:
         elapsed_seconds = time_since_start(start_time)
-        logging.info(f"Seconds since start: {elapsed_seconds:.2f}")
+        logging.info(f"Seconds since start: {elapsed_seconds:.2f}" )
         time.sleep(1)
     total_time = time_since_start(start_time)
     logging.info(f"Total elapsed time: {total_time:.2f} seconds.")
