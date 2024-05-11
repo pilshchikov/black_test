@@ -23,8 +23,9 @@ jobs:
 
       - name: Run flake8 on changed Python files
         run: |
+          set -xe
           echo "Fetching list of changed Python files..."
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '\.py$')
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '\.py$' || true)
           if [ -z "$CHANGED_FILES" ]; then
             echo "No Python files changed."
           else
