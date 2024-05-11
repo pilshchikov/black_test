@@ -16,7 +16,7 @@ def rotate_point(cx, cy, angle, px, py):
     return int(xnew + cx), int(ynew + cy)
 
 def project_point_3d_to_2d(px, py, pz):
-    """Project 3D point to 2D using simple perspective projection."""
+    """Project 3D point to 2D using simple perspective projection"""
     # Perspective projection factors
     focal_length = 200
     if pz:
