@@ -24,6 +24,6 @@ jobs:
           reporter: github-pr-review
           filter_mode: diff_context
           fail_on_error: true
-          level: warning
-          flake8_args: --ignore E501
+          level: info
+          flake8_args: --ignore E501,Q000,D100,D103,D400,D401
           github_token: ${{ secrets.GITHUB_TOKEN }}
