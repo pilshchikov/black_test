@@ -12,6 +12,12 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s 1- %
 # Global flag to control the running of the thread
 run_thread = True
 
+
+
+
+
+
+
 def handle_signal_received(signum, frame):
     global run_thread
     run_thread = False
@@ -41,14 +47,16 @@ def continuously_write_time(start_time):
 
 def main():
     # Register signal handlers
-    signal.signal(signal.SIGINT, handle_signal_received)
+    signal.signal(signal.SIGINT,
+                  handle_signal_received)
     signal.signal(signal.SIGTERM, handle_signal_received)
 
     start_time = datetime.now()
     logging.info("Script started.")
 
     # Thread to update time
-    thread = threading.Thread(target=continuously_write_time, args=(start_time,))
+    thread = threading.Thread(
+        target=continuously_write_time, args=(start_time,))
     thread.start()
 
     # Wait for the thread to finish
