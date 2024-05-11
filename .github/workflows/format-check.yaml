@@ -25,7 +25,7 @@ jobs:
       - name: Get list of changed Python files
         id: files
         run: |
-          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '\.py$')
+          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '\.py$' || true)
           echo "::set-output name=python_files::$FILES"
 
       - name: Check Python files with flake8
