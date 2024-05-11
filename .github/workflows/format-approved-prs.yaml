@@ -29,14 +29,27 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Commit changes
+      - name: Install black
         if: steps.is_approved.outputs.approved == 'true'
+        run: python -m pip install black
+
+      - name: Get list of changed Python files
+        if: steps.is_approved.outputs.approved == 'true'
+        id: files
         run: |
-          python -m pip install black
-          black . --line-length 100
+          FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '\.py$')
+          echo "::set-output name=python_files::$FILES"
+
+      - name: Format changed Python files with black
+        if: steps.is_approved.outputs.approved == 'true' && steps.files.outputs.python_files != ''
+        run: black --line-length 100 ${{ steps.files.outputs.python_files }}
+
+      - name: Commit changes
+        if: steps.is_approved.outputs.approved == 'true' && steps.files.outputs.python_files != ''
+        run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
-          git add -A
+          git add ${{ steps.files.outputs.python_files }}
           git commit -m "Apply black formatting" || echo "No changes to commit"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git push origin ${{ github.event.pull_request.head.ref }}
