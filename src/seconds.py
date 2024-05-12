@@ -8,25 +8,30 @@ from datetime import datetime
 # Configure logger with rotating file handler
 log_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 log_file = "application.log"
-handler = RotatingFileHandler(log_file, mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
+handler = RotatingFileHandler(
+    log_file, mode="a", maxBytes=5 * 1024 * 1024, backupCount=2, encoding=None, delay=0
+)
 handler.setFormatter(log_formatter)
-logger = logging.getLogger('root')
+logger = logging.getLogger("root")
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 # Global flag to control the running of the thread
 run_thread = True
 
+
 def handle_signal_received(signal, frame):
     global run_thread
     run_thread = False
     logger.info("Signal received, preparing to exit...")
+
 
 def time_since_start(start_time):
     """Calculates time elapsed since start_time and formats the output."""
     now = datetime.now()
     elapsed_time = now - start_time
     return elapsed_time.total_seconds()
+
 
 def continuously_write_time(start_time):
     """Function to run in a thread, continuously writing elapsed time."""
@@ -36,6 +41,7 @@ def continuously_write_time(start_time):
         time.sleep(1)
     total_time = time_since_start(start_time)
     logger.info(f"Total elapsed time: {total_time:.2f} seconds.")
+
 
 def main():
     # Register signal handlers
@@ -58,6 +64,7 @@ def main():
             global run_thread
             run_thread = False
             break
+
 
 if __name__ == "__main__":
     main()
