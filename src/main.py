@@ -117,6 +117,7 @@ def main():
         for row in canvas:
             print("".join(row))
         time.sleep(0.1)
+
         angle += 0.05
 
 

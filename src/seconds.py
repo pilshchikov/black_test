@@ -1,34 +1,29 @@
-import time
-import threading
 import logging
-import os
 import signal
-import sys
-from datetime import datetime, timedelta
+import threading
+import time
+from datetime import datetime
 
 # Setup logger
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s 1- %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s 1- %(message)s")
 
 # Global flag to control the running of the thread
 run_thread = True
 
-def handle_signal_received(signum, frame):
+
+def handle_signal_received():
     global run_thread
     run_thread = False
     logging.info("Signal received, preparing to exit...")
 
 
-
-
-
-def time_since_start(start_time, format_string="%Y-%m-%d %H:%M:%S"):
+def time_since_start(start_time):
     """Calculates time elapsed since start_time and formats the output."""
     now = datetime.now()
     elapsed_time = now - start_time
 
-    return elapsed_time.total_seconds(
+    return elapsed_time.total_seconds()
 
-    )
 
 def continuously_write_time(start_time):
     """Function to run in a thread, continuously writing elapsed time."""
@@ -38,6 +33,7 @@ def continuously_write_time(start_time):
         time.sleep(1)
     total_time = time_since_start(start_time)
     logging.info(f"Total elapsed time: {total_time:.2f} seconds.")
+
 
 def main():
     # Register signal handlers
@@ -60,6 +56,7 @@ def main():
             global run_thread
             run_thread = False
             break
+
 
 if __name__ == "__main__":
     main()
